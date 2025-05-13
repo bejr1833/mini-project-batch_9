@@ -1,0 +1,136 @@
+/* General Styles */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4CAF50;
+    padding: 10px 0;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+h2,
+h3 {
+    color: #333;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+form {
+    margin: 20px 0;
+}
+
+input[type="file"] {
+    padding: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+
+/* Index Page */
+
+#index-container {
+    text-align: center;
+}
+
+#upload-info {
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+
+/* Result Page */
+
+.result-container {
+    text-align: center;
+}
+
+.result-container img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.result-container h2 {
+    font-size: 28px;
+    color: #4CAF50;
+}
+
+.result-container p {
+    font-size: 20px;
+}
+
+
+/* History Page */
+
+.history-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.history-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.history-table td {
+    background-color: #f9f9f9;
+}
+
+.history-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.history-table tr:hover {
+    background-color: #ddd;
+}
+
+.history-header {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
