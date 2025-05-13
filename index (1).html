@@ -1,0 +1,299 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Price Prediction Interface</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="error" style="display: none; color: red; text-align: center; padding: 20px;">
+    Error: Failed to load the application. Check the console for details.
+  </div>
+  <script type="text/babel">
+    try {
+      console.log("Starting React application...");
+      const App = () => {
+        const [formData, setFormData] = React.useState({
+          pH: 'Average',
+          pesticideUsage: 'low',
+          fertilizerUsage: 'High',
+          demand: 'Low',
+          temperature: 'Medium',
+          soilType: 'Black Soil',
+          crop: 'Cotton(lint)',
+          season: 'Kharif',
+          state: 'Assam',
+          rainfall: '',
+          msp: '',
+          area: ''
+        });
+        const [result, setResult] = React.useState('');
+        const [imageUrl, setImageUrl] = React.useState('');
+        const [error, setError] = React.useState('');
+
+        const handleInputChange = (e) => {
+          const { name, value } = e.target;
+          setFormData({ ...formData, [name]: value });
+          setError(''); // Clear error on input change
+        };
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          console.log("Form submitted:", formData);
+          // Basic validation
+          if (!formData.rainfall || !formData.msp || !formData.area) {
+            setError('Please fill in all numerical fields (Rainfall, MSP, Area).');
+            return;
+          }
+          if (parseFloat(formData.rainfall) < 0 || parseFloat(formData.msp) < 0 || parseFloat(formData.area) < 0) {
+            setError('Numerical inputs cannot be negative.');
+            return;
+          }
+          // Simulate model prediction
+          const simulatedPrice = (
+            parseFloat(formData.rainfall || 0) * 0.1 +
+            parseFloat(formData.msp || 0) * 0.5 +
+            parseFloat(formData.area || 0) * 0.2
+          ).toFixed(2);
+          setResult(`Predicted Crop Price: ${simulatedPrice} (in original scale)`);
+          setImageUrl('https://via.placeholder.com/600x400?text=Actual+vs+Predicted+Prices');
+        };
+
+        return (
+          <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+              <h1 className="text-2xl font-bold mb-6 text-center">Crop Price Prediction</h1>
+              {error && (
+                <p className="text-red-500 mb-4 text-center">{error}</p>
+              )}
+              <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="crop">Crop</label>
+                    <select name="crop" value={formData.crop} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="Cotton(lint)">Cotton(lint)</option>
+                      <option value="Onion">Onion</option>
+                      <option value="Potato">Potato</option>
+                      <option value="Rice">Rice</option>
+                      <option value="Sugarcane">Sugarcane</option>
+                      <option value="Wheat">Wheat</option>
+                      <option value="Groundnut">Groundnut</option>
+                      <option value="Ragi">Ragi</option>
+                      <option value="Banana">Banana</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="season">Season</label>
+                    <select name="season" value={formData.season} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="Kharif">Kharif</option>
+                      <option value="Whole Year">Whole Year</option>
+                      <option value="Autumn">Autumn</option>
+                      <option value="Summer">Summer</option>
+                      <option value="Winter">Winter</option>
+                      <option value="Rabi">Rabi</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="state">State</label>
+                    <select name="state" value={formData.state} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="Assam">Assam</option>
+                      <option value="Karnataka">Karnataka</option>
+                      <option value="Meghalaya">Meghalaya</option>
+                      <option value="West Bengal">West Bengal</option>
+                      <option value="Puducherry">Puducherry</option>
+                      <option value="Goa">Goa</option>
+                      <option value="Kerala">Kerala</option>
+                      <option value="Andhra Pradesh">Andhra Pradesh</option>
+                      <option value="Tamil Nadu">Tamil Nadu</option>
+                      <option value="Odisha">Odisha</option>
+                      <option value="Bihar">Bihar</option>
+                      <option value="Gujarat">Gujarat</option>
+                      <option value="Madhya Pradesh">Madhya Pradesh</option>
+                      <option value="Maharashtra">Maharashtra</option>
+                      <option value="Mizoram">Mizoram</option>
+                      <option value="Punjab">Punjab</option>
+                      <option value="Uttar Pradesh">Uttar Pradesh</option>
+                      <option value="Haryana">Haryana</option>
+                      <option value="Himachal Pradesh">Himachal Pradesh</option>
+                      <option value="Tripura">Tripura</option>
+                      <option value="Nagaland">Nagaland</option>
+                      <option value="Chhattisgarh">Chhattisgarh</option>
+                      <option value="Uttarakhand">Uttarakhand</option>
+                      <option value="Jharkhand">Jharkhand</option>
+                      <option value="Delhi">Delhi</option>
+                      <option value="Manipur">Manipur</option>
+                      <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                      <option value="Telangana">Telangana</option>
+                      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                      <option value="Sikkim">Sikkim</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="soilType">Soil Type</label>
+                    <select name="soilType" value={formData.soilType} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="Black Soil">Black Soil</option>
+                      <option value="Alluvial Soil">Alluvial Soil</option>
+                      <option value="Laterile Soil">Laterile Soil</option>
+                      <option value="Red/Yellow Soil">Red/Yellow Soil</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="pesticideUsage">Pesticide Usage</label>
+                    <select name="pesticideUsage" value={formData.pesticideUsage} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="low">Low</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="pH">pH</label>
+                    <select name="pH" value={formData.pH} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="Average">Average</option>
+                      <option value="Low">Low</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="temperature">Temperature</label>
+                    <select name="temperature" value={formData.temperature} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="fertilizerUsage">Fertilizer Usage</label>
+                    <select name="fertilizerUsage" value={formData.fertilizerUsage} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="High">High</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="demand">Demand</label>
+                    <select name="demand" value={formData.demand} onChange={handleInputChange} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="area">Area (hectares)</label>
+                    <input
+                      type="number"
+                      name="area"
+                      value={formData.area}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter area (e.g., 100)"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="rainfall">Rainfall (mm)</label>
+                    <input
+                      type="number"
+                      name="rainfall"
+                      value={formData.rainfall}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter rainfall (e.g., 1500)"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2" htmlFor="msp">MSP (₹)</label>
+                    <input
+                      type="number"
+                      name="msp"
+                      value={formData.msp}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter MSP (e.g., 2000)"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+                >
+                  Predict Price
+                </button>
+              </form>
+              {result && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-semibold mb-2">Prediction Result</h2>
+                  <p className="bg-gray-100 p-4 rounded-lg">{result}</p>
+                </div>
+              )}
+              {imageUrl && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-semibold mb-2">Visualization</h2>
+                  <img src={imageUrl} alt="Prediction Plot" className="w-full rounded-lg" />
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      console.log("Rendering React app...");
+      ReactDOM.render(<App />, document.getElementById('root'));
+      console.log("React app rendered successfully");
+    } catch (error) {
+      console.error("Failed to render React app:", error);
+      document.getElementById('error').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
