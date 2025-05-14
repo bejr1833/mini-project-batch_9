@@ -1,0 +1,3 @@
+[submodule "srgan-website"]
+	path = srgan-website
+	url = https://github.com/FalconSlayer51/AIML_MINIPROJECTS_2025_PR.git
