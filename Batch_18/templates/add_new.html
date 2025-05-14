@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Person - Missing Persons Recognition System{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0"><i class="bi bi-person-plus"></i> Add New Missing Person</h3>
+      </div>
+      <div class="card-body">
+        <form action="{{ url_for('add_new') }}" method="post" enctype="multipart/form-data">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="person_id" class="form-label">Person ID</label>
+                <input type="text" class="form-control" id="person_id" name="person_id" required>
+                <div class="form-text">Unique identifier for this person</div>
+              </div>
+              <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+              </div>
+              <div class="mb-3">
+                <label for="last_seen" class="form-label">Last Seen Location</label>
+                <input type="text" class="form-control" id="last_seen" name="last_seen" required>
+              </div>
+              <div class="mb-3">
+                <label for="missing_since" class="form-label">Missing Since (Date)</label>
+                <input type="date" class="form-control" id="missing_since" name="missing_since" required>
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Contact Number</label>
+                <input type="tel" class="form-control" id="phone" name="phone" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="file" class="form-label">Person's Photo</label>
+                <input class="form-control" type="file" id="file" name="file" accept="image/*" required>
+                <div class="form-text">Upload a clear front-facing photo for better recognition</div>
+              </div>
+              <div class="mt-3">
+                <div class="text-center">
+                  <img id="image-preview" src="#" alt="Image Preview" class="img-fluid rounded mt-2 d-none" style="max-height: 250px;">
+                </div>
+              </div>
+              <div class="alert alert-info mt-4">
+                <h5><i class="bi bi-info-circle"></i> Photo Guidelines:</h5>
+                <ul>
+                  <li>Face should be clearly visible and centered</li>
+                  <li>Avoid blurry or low-resolution images</li>
+                  <li>Front-facing pose is recommended</li>
+                  <li>Good lighting conditions improve recognition</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="d-grid gap-2 mt-3">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-person-plus"></i> Add Missing Person
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Image preview
+  document.getElementById('file').addEventListener('change', function(e) {
+    const preview = document.getElementById('image-preview');
+    const file = e.target.files[0];
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.classList.remove('d-none');
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+  
+  // Generate a random unique ID for person_id
+  document.addEventListener('DOMContentLoaded', function() {
+    const personIdField = document.getElementById('person_id');
+    if (personIdField && !personIdField.value) {
+      const randomId = 'MP' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+      personIdField.value = randomId;
+    }
+  });
+</script>
+{% endblock %}
