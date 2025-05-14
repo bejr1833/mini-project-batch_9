@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Missing Persons Recognition System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0"><i class="bi bi-speedometer2"></i> Dashboard</h3>
+      </div>
+      <div class="card-body">
+        <div class="row text-center">
+          <div class="col-md-4">
+            <div class="card mb-3">
+              <div class="card-body">
+                <h3 class="display-4 text-primary">{{ stats.total_persons }}</h3>
+                <p class="text-muted">Total Registered Persons</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-3">
+              <div class="card-body">
+                <h3 class="display-4 text-primary">{{ stats.searches }}</h3>
+                <p class="text-muted">Total Searches</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-3">
+              <div class="card-body">
+                <h3 class="display-4 text-primary">{{ stats.matches }}</h3>
+                <p class="text-muted">Successful Matches</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card shadow-sm">
+      <div class="card-header bg-secondary text-white">
+        <h4 class="mb-0"><i class="bi bi-people-fill"></i> Recent Missing Persons</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Missing Since</th>
+                <th scope="col">Last Seen</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for person in missing_persons %}
+              <tr>
+                <td>{{ person.id }}</td>
+                <td>{{ person.name }}</td>
+                <td>{{ person.missing_since }}</td>
+                <td>{{ person.last_seen }}</td>
+                <td>{{ person.contact }}</td>
+                <td>
+                  <a href="#" class="btn btn-sm btn-outline-primary view-person" data-id="{{ person.id }}">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="personModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Person Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+          <img id="modal-image" src="" alt="Person Image" class="img-fluid rounded">
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>ID:</strong> <span id="modal-id"></span></p>
+            <p><strong>Name:</strong> <span id="modal-name"></span></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Missing Since:</strong> <span id="modal-date"></span></p>
+            <p><strong>Last Seen:</strong> <span id="modal-location"></span></p>
+          </div>
+        </div>
+        <p><strong>Contact:</strong> <span id="modal-contact"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Handle view person modal
+    const personButtons = document.querySelectorAll('.view-person');
+    
+    personButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const personId = this.getAttribute('data-id');
+        
+        // This would be a real API call in production
+        // For demo, we'll use sample data
+        const personData = {
+          id: personId,
+          name: 'Sample Person ' + personId,
+          missing_since: '2025-01-15',
+          last_seen: 'City Park, Downtown',
+          contact: '+1 (555) 123-4567',
+          image: '/static/img/face-recognition.svg'
+        };
+        
+        // Populate modal
+        document.getElementById('modal-id').textContent = personData.id;
+        document.getElementById('modal-name').textContent = personData.name;
+        document.getElementById('modal-date').textContent = personData.missing_since;
+        document.getElementById('modal-location').textContent = personData.last_seen;
+        document.getElementById('modal-contact').textContent = personData.contact;
+        document.getElementById('modal-image').src = personData.image;
+        
+        // Show modal
+        new bootstrap.Modal(document.getElementById('personModal')).show();
+      });
+    });
+  });
+</script>
+{% endblock %}

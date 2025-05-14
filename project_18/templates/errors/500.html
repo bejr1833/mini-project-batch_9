@@ -1,0 +1,16 @@
+<!-- templates/errors/500.html -->
+<!-- templates/errors/500.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center py-5">
+  <div class="display-1 text-muted mb-3">500</div>
+  <h1 class="h2 mb-3">Internal Server Error</h1>
+  <p class="h4 text-muted font-weight-normal mb-4">
+    Something went wrong on our end. Please try again later.
+  </p>
+  <a class="btn btn-primary" href="{{ url_for('home') }}">
+    <i class="bi bi-house"></i> Back to Home
+  </a>
+</div>
+{% endblock %}

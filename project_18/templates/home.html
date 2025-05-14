@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Missing Persons Recognition System{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Title and Image -->
+<div class="row align-items-center">
+  <div class="col-md-6">
+    <div class="p-4">
+      <h1 class="display-4 fw-bold">Finding Missing Persons Using AI</h1>
+      <p class="lead">This system uses advanced facial recognition technology to help locate missing individuals. Upload an image to search our database or contribute by adding information about a missing person.</p>
+      
+      {% if logged_in %}
+      <div class="d-grid gap-3 d-md-flex mt-4">
+        <a href="{{ url_for('search') }}" class="btn btn-primary btn-lg px-4">
+          <i class="bi bi-search"></i> Search Missing Person
+        </a>
+        <a href="{{ url_for('add_new') }}" class="btn btn-outline-secondary btn-lg px-4">
+          <i class="bi bi-person-plus"></i> Add New Person
+        </a>
+      </div>
+      {% else %}
+      <div class="d-grid gap-3 d-md-flex mt-4">
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4">
+          <i class="bi bi-box-arrow-in-right"></i> Login to Start
+        </a>
+        <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg px-4">
+          <i class="bi bi-person-plus"></i> Register Now
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Image Section -->
+  <div class="col-md-6">
+    <div class="p-4 text-center">
+      <img src="{{ url_for('static', filename='img/face-recognition.svg') }}" alt="Facial Recognition Illustration" class="img-fluid" style="max-height: 350px;">
+    </div>
+  </div>
+</div>
+
+<!-- Feature Cards Section -->
+<div class="row mt-5">
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="bi bi-search display-4 text-primary mb-3"></i>
+        <h3>Search</h3>
+        <p>Upload an image to search for a missing person in our database using facial recognition technology.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="bi bi-person-plus display-4 text-primary mb-3"></i>
+        <h3>Add</h3>
+        <p>Register details of a missing person with their photo to help others find them.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body text-center">
+        <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
+        <h3>Secure</h3>
+        <p>Your data is secure and only used for the purpose of finding missing persons.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
