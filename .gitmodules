@@ -1,0 +1,6 @@
+[submodule "srgan-website"]
+	path = srgan-website
+	url = https://github.com/FalconSlayer51/AIML_MINIPROJECTS_2025_PR.git
+[submodule "PixelPerfectAI"]
+	path = PixelPerfectAI
+	url = https://github.com/FalconSlayer51/PixelPerfectAI
