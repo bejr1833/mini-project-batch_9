@@ -1,34 +1,20 @@
-# Plant Disease Detection Using Multi-Model Deep Learning Fusion- Team 20
+# Vision Transformer (ViT) for Fundus Image Classification
 
-This project introduces a deep learning-based system for identifying plant leaf diseases and recommending sustainable organic treatments. It leverages a fusion of three models—Simple CNN, Deep CNN, and EfficientNetB0—to enhance feature extraction and classification accuracy.
+This mini-project demonstrates the use of Vision Transformers (ViT) for eye disease classification using retinal fundus images. The project is implemented in a Jupyter Notebook format.
 
-## Features
+## 📁 File
 
-- Multi-model fusion for improved disease detection  
-- Real-time predictions through a web-based interface  
-- Organic pesticide suggestions mapped to detected diseases  
-- Trained using PlantVillage, Plant Leaves, and PlantDoc datasets  
-- Built using TensorFlow and Keras
+- `mini final vit .ipynb`: Main notebook containing data preprocessing, model definition, training, and evaluation using a Multivariate Vision Transformer.
 
-## How It Works
+## 📌 Project Highlights
 
-1. Upload a plant leaf image via the web app  
-2. The image is processed by three parallel CNN branches  
-3. Extracted features are fused and passed through dense layers  
-4. The model predicts the disease and suggests an organic pesticide
+- Fundus image classification using deep learning.
+- Utilizes Vision Transformer (ViT) architecture.
+- Suitable for detecting eye diseases in medical images.
 
-## Tech Stack
+## 🚀 Setup Instructions
 
-- Python, TensorFlow, Keras  
-- HTML/CSS/JavaScript for frontend  
-- JSON for pesticide mapping
-
-## Datasets Used
-
-- **PlantVillage** – clean lab images  
-- **Plant Leaves** – varied lighting and conditions  
-- **PlantDoc** – real-world, noisy images
-
-## Objective
-
-Deliver an accessible, accurate, and eco-friendly solution to support sustainable agriculture and smart farming practices.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/bejr1833/mini-project-batch_9.git
+   cd mini-project-batch_9
