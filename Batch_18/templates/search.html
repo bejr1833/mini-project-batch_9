@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Search - Missing Persons Recognition System{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0"><i class="bi bi-search"></i> Search for Missing Person</h3>
+      </div>
+      <div class="card-body">
+        <form action="{{ url_for('search') }}" method="post" enctype="multipart/form-data" class="row g-3">
+          <div class="col-md-8">
+            <label for="file" class="form-label">Upload an image containing a face</label>
+            <input class="form-control" type="file" id="file" name="file" accept="image/*" required>
+            <div class="form-text">Supported formats: JPG, JPEG, PNG</div>
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-search"></i> Search
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if uploaded_image %}
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card shadow-sm">
+      <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Uploaded Image</h5>
+      </div>
+      <div class="card-body text-center">
+        <img src="data:image/jpeg;base64,{{ uploaded_image }}" alt="Uploaded Image" class="img-fluid" style="max-height: 300px;">
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if result %}
+  {% if result.error %}
+  <div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle"></i> {{ result.error }}
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-header {% if result.match_found %}bg-success{% else %}bg-warning{% endif %} text-white">
+          <h5 class="mb-0">
+            {% if result.match_found %}
+            <i class="bi bi-check-circle"></i> Match Found! (Similarity: {{ (1 - result.distance)|round(3) }})
+            {% else %}
+            <i class="bi bi-question-circle"></i> Possible Match (Low Confidence: {{ (1 - result.distance)|round(3) }})
+            {% endif %}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 text-center mb-3">
+              <img src="data:image/jpeg;base64,{{ result.image_base64 }}" alt="Matched Person" class="img-fluid rounded" style="max-height: 250px;">
+            </div>
+            <div class="col-md-8">
+              <h4 class="card-title">{{ result.name }}</h4>
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th style="width: 150px;"><i class="bi bi-fingerprint"></i> ID:</th>
+                      <td>{{ result.person_id }}</td>
+                    </tr>
+                    <tr>
+                      <th><i class="bi bi-geo-alt"></i> Last Seen:</th>
+                      <td>{{ result.last_seen }}</td>
+                    </tr>
+                    <tr>
+                      <th><i class="bi bi-calendar3"></i> Missing Since:</th>
+                      <td>{{ result.missing_since }}</td>
+                    </tr>
+                    <tr>
+                      <th><i class="bi bi-telephone"></i> Contact:</th>
+                      <td>{{ result.contact }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mt-3">
+                <div class="alert alert-info">
+                  <i class="bi bi-info-circle"></i> If you have any information about this person, please contact the provided phone number immediately.
+                </div>
+                <a href="{{ url_for('search') }}" class="btn btn-outline-primary">
+                  <i class="bi bi-search"></i> Start New Search
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% endif %}
+{% endblock %}
